@@ -75,6 +75,23 @@ function App() {
   const maxLevel = history.length > 0 ? Math.max(...history) : 0;
   const avgLevel = history.length > 0 ? Math.round(history.reduce((a, b) => a + b, 0) / history.length) : 0;
   
+  const resetTank = async () => {
+    try {
+      const res = await fetch("http://localhost:4000/reset", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ initial: 0 })
+      });
+      const data = await res.json();
+      if (data.ok) {
+        alert("\u270a Tank reset to 0L");
+      }
+    } catch (err) {
+      console.error("Reset failed:", err);
+      alert("❌ Failed to reset tank. Make sure backend is running.");
+    }
+  };
+
   const downloadReport = () => {
     const csvContent = [
       ["Water Tank Monitoring Report"],
@@ -106,6 +123,7 @@ function App() {
   return (
     <div className="app">
       <h1>💧 Real-Time Water Tank Monitor</h1>
+      
 
       <div style={{ display: "flex", gap: "30px", alignItems: "flex-start", justifyContent: "center", flexWrap: "wrap" }}>
         <div>
@@ -125,8 +143,18 @@ function App() {
             border: "none",
             borderRadius: "5px",
             cursor: "pointer",
-            marginTop: "10px"
+            marginTop: "10px",
+            marginRight: "10px"
           }}>📥 Download Report (CSV)</button>
+          <button onClick={resetTank} style={{
+            padding: "10px 20px",
+            backgroundColor: "#2196F3",
+            color: "white",
+            border: "none",
+            borderRadius: "5px",
+            cursor: "pointer",
+            marginTop: "10px"
+          }}>🔄 Reset Tank</button>
         </div>
       </div>
 
